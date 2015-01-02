@@ -18,7 +18,13 @@ LOGGER_FLAGS=""
 
 JVM_COMMON_BUILDPACK=http://lang-jvm.s3.amazonaws.com/jvm-buildpack-common-v8.tar.gz
 mkdir -p /tmp/jvm-common
-curl --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common
+if [[ -f $CACHE_DIR/jvm-buildpack-common-v8.tar.gz ]]; then
+    echo -n "-----> Common buildpack found in cache, skipping download"
+else
+    echo -n "-----> Downloading common buildpack"
+    curl --silent --location $JVM_COMMON_BUILDPACK -o $CACHE_DIR/jvm-buildpack-common-v8.tar.gz
+fi
+tar xzm $CACHE_DIR/jvm-buildpack-common-v8.tar.gz -C /tmp/jvm-common
 . /tmp/jvm-common/bin/util
 . /tmp/jvm-common/bin/java
 
